@@ -8,11 +8,11 @@ DataFrameType = Array{ColumnType,1}
 
 
 function parseStringToInt64(aString)
-    return parse (Int64, aString)
+    return parse(Int64, aString)
 end
 
 function parseStringToFloat64(aString)
-    return parse (Float64, aString)
+    return parse(Float64, aString)
 end
 
 #strictly not required, added for the sake of uniformity and in case
@@ -33,11 +33,11 @@ function moveDataFromRowsOfCSVToDataframeDataStructure(inMemDataSet,columnTypes)
   parserfunctions = []
   for j = 1:length(columnTypes);
     colType = columnTypes[j]
-    if ( colType == "INT64")
+    if (colType == "INT64")
         push!(parserfunctions, parseStringToInt64);
-    elseif ( colType == "FLOAT64")
+    elseif (colType == "FLOAT64")
         push!(parserfunctions, parseStringToFloat64);
-    elseif ( colType == "STR")
+    elseif (colType == "STR")
         push!(parserfunctions, parseStringToString);
     else
        throw (ColumnTypeException(colType));
@@ -73,10 +73,11 @@ function moveDataFromRowsOfCSVToDataframeDataStructure(inMemDataSet,columnTypes)
     catch
         println("Exception caught");
         println(x);
-        println( C);
+        println(C);
     end
     
  end
+ return dataframe
 end
 
 function loadFromFile(fileName)
@@ -117,15 +118,47 @@ function loadAndMeasure(fileName)
         push!(columnTypes, "STR"); 
     end
 
-    @time moveDataFromRowsOfCSVToDataframeDataStructure(B,columnTypes);
+    @time df = moveDataFromRowsOfCSVToDataframeDataStructure(B,columnTypes);
     B=0; #dellocate
+    return df
 
+end
+
+#prints some diagnostics on the returned dataframe .
+# just a sanity check
+function diagnostics(df)
+    # TODO use string interpolation to format vs this crap
+    numberOfColumns = length(df)
+    println("loading complete")
+    print("dataframe has ")
+    print(numberOfColumns)
+    println(" columns ")
+
+    for i in 1:(length(df))
+     column = df[i]
+     lengthOfColumn = length(df[i])
+     print("column ")
+     print(i)
+     print(" type ")
+     print(typeof(df[i]))
+     print(", length =  ")
+     print(length(df[i]))
+     print(",  ")
+
+     print(" first element = ")
+     print(df[i][1])
+     print(" and last element = ")
+     println(df[i][lengthOfColumn])
+    end
+   
 end
 
 #rough equivalent of R's
 # system.time(read.table("mixedmillionrowdataset.csv", sep=",", header=FALSE, skipNul=TRUE))  
 #and
 # system.time(fread("mixedmillionrowdataset.csv", sep=",", header=FALSE)) 
+
 #gc_disable() #uncomment to disable gc
-loadAndMeasure("mixedthousandrowdataset.csv");
+df = loadAndMeasure("mixedthousandrowdataset.csv");
+#diagnostics(df) #uncomment for diagnostics
 
