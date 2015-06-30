@@ -66,7 +66,7 @@ function moveDataFromRowsOfCSVToDataframeDataStructure(inMemDataSet,columnTypes)
   #initialize dataframe
   dataframe = ColumnType[];
   for i = 1:length(columnTypes);
-    colType = columnTypes[i]
+    
     colType = columnTypes[i]
     if ( colType == "INT64")
         push!(dataframe, Int64[]);
