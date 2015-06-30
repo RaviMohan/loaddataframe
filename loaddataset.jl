@@ -21,26 +21,7 @@ function parseStringToString(aString)
     return strip(aString)
 end
 
-#strings is a list of strings to be parsed
-#processors is an array of functions, each of which can parse the corresponding(by position) element in the array strings to an appropriate value
-#Type [String],[Process]
-function process(strings, processors)
-    # In Haskell this would be 'zipWith processors strings ...', but damned if I know how to do this in Julia, so
-    #assume both arrays have the same length
-    result = Int64[]
-    #for (x,y) in zip(processors,strings)
-    #    push!(result,(x(y)))
-    #end
-    # this is too slow converting to imperative code doubles speeed, so we have
 
-    l = length(strings)
-    for i in 1:l
-        x = processors[i]
-        y = strings[i]
-        push!(result,(x(y)))
-    end
-    return result
-end
 
 function moveDataFromRowsOfCSVToDataframeDataStructure(inMemDataSet,columnTypes)
   #initialize parsing functions
@@ -141,10 +122,10 @@ function loadAndMeasure(fileName)
 
 end
 
-#rough equivalent of
+#rough equivalent of R's
 # system.time(read.table("mixedmillionrowdataset.csv", sep=",", header=FALSE, skipNul=TRUE))  
 #and
 # system.time(fread("mixedmillionrowdataset.csv", sep=",", header=FALSE)) 
-#gc_disable() uncomment to disable gc
+#gc_disable() #uncomment to disable gc
 loadAndMeasure("mixedthousandrowdataset.csv");
 
